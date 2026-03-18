@@ -27,7 +27,7 @@ All projects will require the following:
 ## Phase 0: Force Selection, Analysis & Plan
 ---------- 
 
-#### Custom Force: NAME OF YOUR FORCE
+#### Custom Force: Frictional Force
 
 ### Custom Force Formula
 What is the formula for your force? Including descriptions/definitions for the symbols. (You may include a picture of the formula if it is not easily typed.)
@@ -55,31 +55,32 @@ YOUR ANSWER HERE
 ### Simulation 1: Gravity
 Describe how you will attempt to simulate orbital motion.
 
+Fixed orb in the center, applying gravity to all other orbs. Possibly spawn orbs to see them orbiting.
 --- 
 
 ### Simulation 2: Spring
 Describe what your spring simulation will look like. Explain how it will be setup, and how it should behave while running.
 
-YOUR ANSWER HERE
+Moving orbs with springs connecting them, red when extended, green when not. Maybe have user controlling one of the orbs.
 
 --- 
 
 ### Simulation 3: Drag
 Describe what your drag simulation will look like. Explain how it will be setup, and how it should behave while running.
 
-YOUR ANSWER HERE
+Drag force applied on orbs, they will move slower.
 
 --- 
 
 ### Simulation 4: Custom force
 Describe what your Custom force simulation will look like. Explain how it will be setup, and how it should behave while running.
 
-YOUR ANSWER HERE
+Split screen with two surfaces, one with lower frictional constant one with higher, show how friction works.
 
 --- 
 
 ### Simulation 5: Combination
 Describe what your combination simulation will look like. Explain how it will be setup, and how it should behave while running.
 
-YOUR ANSWER HERE
+Fixed orb exerting gravity on many other orbs connected by springs, drag making them move slower, and an area with friction to also make them slow down until they are pulled by gravity again.
 
