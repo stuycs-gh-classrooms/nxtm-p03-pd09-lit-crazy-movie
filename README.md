@@ -60,6 +60,7 @@ FC = frictional constant
 Describe how you will attempt to simulate orbital motion.
 
 Fixed orb in the center, applying gravity to all other orbs. Possibly spawn orbs to see them orbiting.
+
 --- 
 
 ### Simulation 2: Spring
