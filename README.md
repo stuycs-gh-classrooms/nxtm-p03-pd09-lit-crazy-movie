@@ -2,8 +2,8 @@
 ## Project 00
 ### NeXTCS
 ### Period: 
-## Thinker0: YOUR NAME HERE
-## Thinker1: OTHER NAME HERE
+## Thinker0: Avery Brosnick
+## Thinker1: Ruby Vaca
 ## Thinker2: OTHER NAME HERE (delete this line if you are a duo)
 ---
 
