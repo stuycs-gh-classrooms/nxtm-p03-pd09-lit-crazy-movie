@@ -10,24 +10,24 @@ class Orb {
 
 
   Orb() {
-     bsize = random(10, MAX_SIZE);
-     float x = random(bsize/2, width-bsize/2);
-     float y = random(bsize/2, height-bsize/2);
-     center = new PVector(x, y);
-     mass = random(10, 100);
-     velocity = new PVector();
-     acceleration = new PVector();
-     setColor();
+    bsize = random(10, MAX_SIZE);
+    float x = random(bsize/2, width-bsize/2);
+    float y = random(bsize/2, height-bsize/2);
+    center = new PVector(x, y);
+    mass = random(10, 100);
+    velocity = new PVector();
+    acceleration = new PVector();
+    setColor();
   }
 
   Orb(float x, float y, float s, float m) {
-     bsize = s;
-     mass = m;
-     center = new PVector(x, y);
-     velocity = new PVector();
-     acceleration = new PVector();
-     setColor();
-   }
+    bsize = s;
+    mass = m;
+    center = new PVector(x, y);
+    velocity = new PVector();
+    acceleration = new PVector();
+    setColor();
+  }
 
   //movement behavior
   void move(boolean bounce) {
@@ -67,6 +67,15 @@ class Orb {
     return force;
   }
 
+  PVector getFriction(float mu, float g) {
+    PVector f = velocity.copy();
+    f.mult(-1);
+    f.normalize();
+    float normalForce = mass * g;
+    f.mult(mu * normalForce);
+    return f;
+  }
+
   //spring force between calling orb and other
   PVector getSpring(Orb other, int springLength, float springK) {
     PVector direction = PVector.sub(other.center, this.center);
@@ -79,7 +88,7 @@ class Orb {
     return direction;
   }//getSpring
 
-  boolean yBounce(){
+  boolean yBounce() {
     if (center.y > height - bsize/2) {
       velocity.y *= -1;
       center.y = height - bsize/2;
@@ -98,8 +107,7 @@ class Orb {
       center.x = width - bsize/2;
       velocity.x *= -1;
       return true;
-    }
-    else if (center.x < bsize/2) {
+    } else if (center.x < bsize/2) {
       center.x = bsize/2;
       velocity.x *= -1;
       return true;
@@ -109,7 +117,7 @@ class Orb {
 
   boolean collisionCheck(Orb other) {
     return ( this.center.dist(other.center)
-             <= (this.bsize/2 + other.bsize/2) );
+      <= (this.bsize/2 + other.bsize/2) );
   }//collisionCheck
 
 
