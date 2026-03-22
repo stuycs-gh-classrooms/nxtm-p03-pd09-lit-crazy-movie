@@ -99,13 +99,25 @@ void makeOrbs() {
 
 }
 
+void resetSim(int mode) {
+  for (int i=0; i<simMode.length; i++) simMode[i] = false;
+  simMode[mode] = true;
+  makeOrbs(); 
+
+  if (mode == GRAVITY) {
+  } else if (mode == SPRING) {
+  } else if (mode == DRAGF) {
+  } else if (mode == FRICTION) {
+  } else if (mode == COMBINATION) {
+  }
+}
 
 void keyPressed() {
-  if (key == '1') { simMode[GRAVITY] = !simMode[GRAVITY]; }
-  if (key == '2') { simMode[SPRING] = !simMode[SPRING]; }
-  if (key == '3') { simMode[DRAGF] = !simMode[DRAGF]; }
-  if (key == '4') { simMode[FRICTION] = !simMode[FRICTION]; }
-  if (key == '5') { simMode[COMBINATION] = !simMode[COMBINATION]; }
+  if (key == '1') { simMode[GRAVITY] = !simMode[GRAVITY]; resetSim(GRAVITY);}
+  if (key == '2') { simMode[SPRING] = !simMode[SPRING]; resetSim(SPRING);}
+  if (key == '3') { simMode[DRAGF] = !simMode[DRAGF]; resetSim(DRAGF);}
+  if (key == '4') { simMode[FRICTION] = !simMode[FRICTION]; resetSim(FRICTION);}
+  if (key == '5') { simMode[COMBINATION] = !simMode[COMBINATION]; resetSim(COMBINATION);}
   if (key == ' ') { simMode[MOVING] = !simMode[MOVING]; }
   if (key == 'b') { simMode[BOUNCE] = !simMode[BOUNCE]; }
   if (key == 'r') {
