@@ -18,6 +18,8 @@ int MOVING = 5;
 int BOUNCE = 6;
 boolean[] simMode = new boolean[7];
 String[] modes = {"Gravity", "Spring", "Drag", "Friction", "Combination", "Moving", "Bounce"};
+float[] frictioncoef = {0.4, .05, .02, .3, .8, .7};
+float mu = 0;
 
 FixedOrb earth;
 OrbNode[] orbs = new OrbNode[NUM_ORBS];
@@ -59,7 +61,7 @@ void draw() {
       //FRICTION
       if (simMode[FRICTION] || simMode[COMBINATION]) {
         // Based on your plan: High friction on bottom half, low on top
-        float mu = (current.center.y > height/2) ? 0.3 : 0.05;
+        //float mu = (current.center.y > height/2) ? 0.3 : 0.05;
         current.applyForce(current.getFriction(mu, 0.1));
       }
 
@@ -124,7 +126,21 @@ void keyPressed() {
   if (key == '4') {
     simMode[FRICTION] = !simMode[FRICTION];
     resetSim(FRICTION);
-  }
+    if (keyCode == UP) {
+      for (int o=0; o<orbs.length; o++) {
+        orbs[o].velocity.y -= 1;
+      }
+    }
+    int i = 0;
+    if (key == 'w') {
+      i = i +1;
+      frictioncoef[i] = mu;
+      println(frictioncoef[i]);
+      if (i > frictioncoef.length) {
+        i = i -1;
+      }
+    }
+}
   if (key == '5') {
     simMode[COMBINATION] = !simMode[COMBINATION];
     resetSim(COMBINATION);
