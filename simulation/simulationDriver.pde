@@ -20,7 +20,7 @@ boolean[] simMode = new boolean[7];
 String[] modes = {"Gravity", "Spring", "Drag", "Friction", "Combination", "Moving", "Bounce"};
 
 FixedOrb earth;
-OrbNode o0, o1, o2, o3;
+OrbNode[] orbs = new OrbNode[NUM_ORBS];
 
 void setup() {
   size(600, 600);
@@ -29,7 +29,6 @@ void setup() {
 
   earth = new FixedOrb(width/2, height * 200, 1, 20000);
   makeOrbs();
-
 }//setup
 
 void draw() {
@@ -38,71 +37,68 @@ void draw() {
 
   OrbNode current;
 
-  
+
   if (simMode[MOVING]) {
-    current = o0;
+    current = orbs[0];
     while (current != null) {
       //SPRING FORCE
       if (simMode[SPRING] || simMode[COMBINATION]) {
         current.applySprings(SPRING_LENGTH, SPRING_K);
       }
-      
+
       //GRAVITY
       if (simMode[GRAVITY] || simMode[COMBINATION]) {
         current.applyForce(current.getGravity(earth, G_CONSTANT));
       }
-      
+
       //DRAGF
       if (simMode[DRAGF] || simMode[COMBINATION]) {
         current.applyForce(current.getDragForce(D_COEF));
       }
 
-      //FRICTION 
+      //FRICTION
       if (simMode[FRICTION] || simMode[COMBINATION]) {
         // Based on your plan: High friction on bottom half, low on top
-        float mu = (current.center.y > height/2) ? 0.3 : 0.05; 
-        current.applyForce(current.getFriction(mu, 0.1)); 
+        float mu = (current.center.y > height/2) ? 0.3 : 0.05;
+        current.applyForce(current.getFriction(mu, 0.1));
       }
-      
+
       current = current.next;
     }
 
 
-    current = o0;
+    current = orbs[0];
     while (current != null) {
       current.move(simMode[BOUNCE]);
       current = current.next;
     }
   }
 
-  current = o0;
-  while (current != null) {
-    current.display(SPRING_LENGTH);
-    current = current.next;
+  if (orbs[0] != null) {
+    for (int o=0; o < NUM_ORBS; o++) {
+      orbs[o].display(SPRING_LENGTH);
+    }
   }
-
 }//draw
 
 
 void makeOrbs() {
-  o0 = new OrbNode();
-  o1 = new OrbNode();
-  o2 = new OrbNode();
-  o3 = new OrbNode();
+  for (int o=0; o < NUM_ORBS; o++) {
+    orbs[o] = new OrbNode();
 
-  o0.next = o1;
-  o1.previous = o0;
-  o1.next = o2;
-  o2.previous = o1;
-  o2.next = o3;
-  o3.previous = o2;
-
+    if (o < NUM_ORBS - 1) {
+      orbs[o].next = orbs[o+1];
+    }
+    if (o > 0) {
+      orbs[o].previous = orbs[o-1];
+    }
+  }
 }
 
 void resetSim(int mode) {
   for (int i=0; i<simMode.length; i++) simMode[i] = false;
   simMode[mode] = true;
-  makeOrbs(); 
+  makeOrbs();
 
   if (mode == GRAVITY) {
   } else if (mode == SPRING) {
@@ -113,15 +109,39 @@ void resetSim(int mode) {
 }
 
 void keyPressed() {
-  if (key == '1') { simMode[GRAVITY] = !simMode[GRAVITY]; resetSim(GRAVITY);}
-  if (key == '2') { simMode[SPRING] = !simMode[SPRING]; resetSim(SPRING);}
-  if (key == '3') { simMode[DRAGF] = !simMode[DRAGF]; resetSim(DRAGF);}
-  if (key == '4') { simMode[FRICTION] = !simMode[FRICTION]; resetSim(FRICTION);}
-  if (key == '5') { simMode[COMBINATION] = !simMode[COMBINATION]; resetSim(COMBINATION);}
-  if (key == ' ') { simMode[MOVING] = !simMode[MOVING]; }
-  if (key == 'b') { simMode[BOUNCE] = !simMode[BOUNCE]; }
+  if (key == '1') {
+    simMode[GRAVITY] = !simMode[GRAVITY];
+    resetSim(GRAVITY);
+  }
+  if (key == '2') {
+    simMode[SPRING] = !simMode[SPRING];
+    resetSim(SPRING);
+  }
+  if (key == '3') {
+    simMode[DRAGF] = !simMode[DRAGF];
+    resetSim(DRAGF);
+  }
+  if (key == '4') {
+    simMode[FRICTION] = !simMode[FRICTION];
+    resetSim(FRICTION);
+  }
+  if (key == '5') {
+    simMode[COMBINATION] = !simMode[COMBINATION];
+    resetSim(COMBINATION);
+  }
+  if (key == ' ') {
+    simMode[MOVING] = !simMode[MOVING];
+  }
+  if (key == 'b') {
+    simMode[BOUNCE] = !simMode[BOUNCE];
+  }
   if (key == 'r') {
     makeOrbs();
+  }
+  if (keyCode == UP) {
+    for (int o=0; o<orbs.length; o++) {
+      orbs[o].velocity.y -= 1;
+    }
   }
 }//keyPressed
 
@@ -133,8 +153,11 @@ void displayMode() {
 
   for (int m=0; m<simMode.length; m++) {
     //set box color
-    if (simMode[m]) { fill(0, 255, 0); }
-    else { fill(255, 0, 0); }
+    if (simMode[m]) {
+      fill(0, 255, 0);
+    } else {
+      fill(255, 0, 0);
+    }
 
     float w = textWidth(modes[m]);
     rect(x, 0, w+5, 20);
