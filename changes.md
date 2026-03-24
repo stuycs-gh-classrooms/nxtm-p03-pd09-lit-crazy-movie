@@ -1,6 +1,6 @@
 **What Will Change**
 
--No more split screen for friction simulation, instead the friction operates on the bottom 20% of the screen
+-No more split screen for friction simulation, instead the friction operates on the bottom 40% of the screen and shows a color gradient based on the strength of the friction
 
 -Ability to rotate between set friction constants using the 'w' key
 
