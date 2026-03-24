@@ -40,11 +40,11 @@ void display(int springLength){
   }
   
   void applySprings(int springLength, float springK){
-    if (next != null) {
+    if (next != null) { //connect only if has next
       PVector spring = getSpringForce(next, springLength, springK);
-      this.applyForce(spring);
+      this.applyForce(spring); 
     }
-    if (previous != null) {
+    if (previous != null) { //connect only if has previous
       PVector spring = getSpringForce(previous, springLength, springK);
       this.applyForce(spring);
     }
