@@ -85,8 +85,11 @@ void draw() {
 
 
 void makeOrbs() {
-  for (int o=0; o < NUM_ORBS; o++) {
+  for (int o = 0; o < NUM_ORBS; o++) {
     orbs[o] = new OrbNode();
+    
+    // place in a line so springs start stable
+    orbs[o].center = new PVector(100 + o * SPRING_LENGTH, height/2);
 
     if (o < NUM_ORBS - 1) {
       orbs[o].next = orbs[o+1];
