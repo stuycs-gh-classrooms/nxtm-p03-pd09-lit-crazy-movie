@@ -19,6 +19,7 @@ int BOUNCE = 6;
 boolean[] simMode = new boolean[7];
 String[] modes = {"Gravity", "Spring", "Drag", "Friction", "Combination", "Moving", "Bounce"};
 float[] frictioncoef = {0.4, .05, .02, .3, .8, .7};
+int fIndex = 0;
 float mu = 0;
 
 FixedOrb earth;
@@ -29,7 +30,6 @@ void setup() {
   simMode[MOVING] = true;
   simMode[BOUNCE] = true;
 
-  earth = new FixedOrb(width/2, height * 200, 1, 20000);
   makeOrbs();
 }//setup
 
@@ -38,47 +38,55 @@ void draw() {
   displayMode();
 
   OrbNode current;
-
-
+  if (simMode[FRICTION] || simMode[COMBINATION]) {
+    fill(0, 255, 0);
+    rect(0, height * 4/5, width, height);
+  }
   if (simMode[MOVING]) {
-    current = orbs[0];
-    while (current != null) {
-      //SPRING FORCE
-      if (simMode[SPRING] || simMode[COMBINATION]) {
-        current.applySprings(SPRING_LENGTH, SPRING_K);
-      }
+    for (int i = 0; i < NUM_ORBS; i++) {
+      current = orbs[i];
+      if (current != null) {
 
-      //GRAVITY
-      if (simMode[GRAVITY] || simMode[COMBINATION]) {
-        current.applyForce(current.getGravity(earth, G_CONSTANT));
-      }
+        //SPRING FORCE
+        if (simMode[SPRING] || simMode[COMBINATION]) {
+          current.applySprings(SPRING_LENGTH, SPRING_K);
+        }
 
-      //DRAGF
-      if (simMode[DRAGF] || simMode[COMBINATION]) {
-        current.applyForce(current.getDragForce(D_COEF));
-      }
+        //GRAVITY
+        if (simMode[GRAVITY] || simMode[COMBINATION]) {
+          current.applyForce(current.getGravity(earth, G_CONSTANT));
+        }
 
-      //FRICTION
-      if (simMode[FRICTION] || simMode[COMBINATION]) {
-        // Based on your plan: High friction on bottom half, low on top
-        //float mu = (current.center.y > height/2) ? 0.3 : 0.05;
-        current.applyForce(current.getFriction(mu, 0.1));
-      }
+        //DRAGF
+        if (simMode[DRAGF] || simMode[COMBINATION]) {
+          current.applyForce(current.getDragForce(D_COEF));
+        }
 
-      current = current.next;
+        //FRICTION
+        if (simMode[FRICTION] || simMode[COMBINATION]) {
+          
+          if (current.center.y >= height * 4/5) {
+            current.applyForce(current.getFriction(mu, 0.1));
+          }
+        }
+      }
     }
 
-
-    current = orbs[0];
-    while (current != null) {
-      current.move(simMode[BOUNCE]);
-      current = current.next;
+    for (int i = 0; i < NUM_ORBS; i++) {
+      current = orbs[i];
+      if (current != null) {
+        current.move(simMode[BOUNCE]);
+      }
     }
   }
 
   if (orbs[0] != null) {
     for (int o=0; o < NUM_ORBS; o++) {
-      orbs[o].display(SPRING_LENGTH);
+      if (simMode[SPRING] || simMode[COMBINATION]) {
+        orbs[o].display(SPRING_LENGTH);
+      } else {
+        orbs[o].display();
+      }
     }
   }
 }//draw
@@ -87,7 +95,8 @@ void draw() {
 void makeOrbs() {
   for (int o=0; o < NUM_ORBS; o++) {
     orbs[o] = new OrbNode();
-
+  }
+  for (int o=0; o < NUM_ORBS; o++) {
     if (o < NUM_ORBS - 1) {
       orbs[o].next = orbs[o+1];
     }
@@ -103,10 +112,16 @@ void resetSim(int mode) {
   makeOrbs();
 
   if (mode == GRAVITY) {
+    earth = new FixedOrb(width/2, height * 500, 100, 20000);
   } else if (mode == SPRING) {
   } else if (mode == DRAGF) {
   } else if (mode == FRICTION) {
+    fill(0, 255, 0);
+    rect(0, height * 4/5, width, height);
   } else if (mode == COMBINATION) {
+    earth = new FixedOrb(width/2, height * 500, 100, 20000);
+    fill(0, 255, 0);
+    rect(0, height * 4/5, width, height);
   }
 }
 
@@ -126,24 +141,38 @@ void keyPressed() {
   if (key == '4') {
     simMode[FRICTION] = !simMode[FRICTION];
     resetSim(FRICTION);
-    if (keyCode == UP) {
-      for (int o=0; o<orbs.length; o++) {
-        orbs[o].velocity.y -= 1;
-      }
-    }
-    int i = 0;
-    if (key == 'w') {
-      i = i +1;
-      frictioncoef[i] = mu;
-      println(frictioncoef[i]);
-      if (i > frictioncoef.length) {
-        i = i -1;
-      }
-    }
-}
+  }
   if (key == '5') {
     simMode[COMBINATION] = !simMode[COMBINATION];
     resetSim(COMBINATION);
+  }
+  if (keyCode == UP) {
+    for (int o=0; o<orbs.length; o++) {
+      orbs[o].velocity.y -= 1;
+    }
+  }
+  if (keyCode == DOWN) {
+    for (int o=0; o<orbs.length; o++) {
+      orbs[o].velocity.y += 1;
+    }
+  }
+  if (keyCode == LEFT) {
+    for (int o=0; o<orbs.length; o++) {
+      orbs[o].velocity.x -= 1;
+    }
+  }
+  if (keyCode == RIGHT) {
+    for (int o=0; o<orbs.length; o++) {
+      orbs[o].velocity.x += 1;
+    }
+  }
+  if (key == 'w') {
+    fIndex++;
+    if (fIndex > frictioncoef.length-1) {
+      fIndex = 0;
+    }
+    mu = frictioncoef[fIndex];
+    println(frictioncoef[fIndex]);
   }
   if (key == ' ') {
     simMode[MOVING] = !simMode[MOVING];
@@ -153,11 +182,6 @@ void keyPressed() {
   }
   if (key == 'r') {
     makeOrbs();
-  }
-  if (keyCode == UP) {
-    for (int o=0; o<orbs.length; o++) {
-      orbs[o].velocity.y -= 1;
-    }
   }
 }//keyPressed
 
