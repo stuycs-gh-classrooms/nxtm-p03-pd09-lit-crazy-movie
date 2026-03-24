@@ -64,11 +64,11 @@ void draw() {
         }
 
         //FRICTION
-        if (simMode[FRICTION] || simMode[COMBINATION]) {
+        if (simMode[FRICTION] || simMode[COMBINATION]) { 
           
           if (current.center.y >= height * 4/5) {
             current.applyForce(current.getFriction(mu, 0.1));
-          }
+          } // all of these have or combination so they activate in combination
         }
       }
     }
@@ -84,9 +84,9 @@ void draw() {
   if (orbs[0] != null) {
     for (int o=0; o < NUM_ORBS; o++) {
       if (simMode[SPRING] || simMode[COMBINATION]) {
-        orbs[o].display(SPRING_LENGTH);
+        orbs[o].display(SPRING_LENGTH); //displays orbs and springs
       } else {
-        orbs[o].display();
+        orbs[o].display(); // displays only orbs
       }
     }
   }
@@ -117,8 +117,8 @@ void resetSim(int mode) {
   } else if (mode == SPRING) {
   } else if (mode == DRAGF) {
   } else if (mode == FRICTION) {
-    fill(FRIC);
-    rect(0, height * 3/5, width, height);
+    fill(FRIC); //color of how strong friction is
+    rect(0, height * 3/5, width, height); //area where friction is applied
   } else if (mode == COMBINATION) {
     earth = new FixedOrb(width/2, height * 500, 100, 20000);
     fill(FRIC);
@@ -147,27 +147,27 @@ void keyPressed() {
     simMode[COMBINATION] = !simMode[COMBINATION];
     resetSim(COMBINATION);
   }
-  if (keyCode == UP) {
+  if (keyCode == UP) { //decreases y velocity
     for (int o=0; o<orbs.length; o++) {
       orbs[o].velocity.y -= 1;
     }
   }
-  if (keyCode == DOWN) {
+  if (keyCode == DOWN) { // increases y velocity
     for (int o=0; o<orbs.length; o++) {
       orbs[o].velocity.y += 1;
     }
   }
-  if (keyCode == LEFT) {
+  if (keyCode == LEFT) { //decreases x velocity
     for (int o=0; o<orbs.length; o++) {
       orbs[o].velocity.x -= 1;
     }
   }
-  if (keyCode == RIGHT) {
+  if (keyCode == RIGHT) { //increases y velocity
     for (int o=0; o<orbs.length; o++) {
       orbs[o].velocity.x += 1;
     }
   }
-  if (key == 'w') {
+  if (key == 'w') { //changes friction coef by going through an array
     fIndex++;
     if (fIndex > frictioncoef.length-1) {
       fIndex = 0;
