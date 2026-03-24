@@ -5,6 +5,7 @@ float MIN_MASS = 10;
 float MAX_MASS = 100;
 float G_CONSTANT = 1;
 float D_COEF = 0.1;
+color FRIC = color(0, 0, 255);
 
 int SPRING_LENGTH = 50;
 float  SPRING_K = 0.005;
@@ -39,8 +40,8 @@ void draw() {
 
   OrbNode current;
   if (simMode[FRICTION] || simMode[COMBINATION]) {
-    fill(0, 255, 0);
-    rect(0, height * 4/5, width, height);
+    fill(FRIC);
+    rect(0, height * 3/5, width, height);
   }
   if (simMode[MOVING]) {
     for (int i = 0; i < NUM_ORBS; i++) {
@@ -116,12 +117,12 @@ void resetSim(int mode) {
   } else if (mode == SPRING) {
   } else if (mode == DRAGF) {
   } else if (mode == FRICTION) {
-    fill(0, 255, 0);
-    rect(0, height * 4/5, width, height);
+    fill(FRIC);
+    rect(0, height * 3/5, width, height);
   } else if (mode == COMBINATION) {
     earth = new FixedOrb(width/2, height * 500, 100, 20000);
-    fill(0, 255, 0);
-    rect(0, height * 4/5, width, height);
+    fill(FRIC);
+    rect(0, height * 3/5, width, height);
   }
 }
 
@@ -173,6 +174,10 @@ void keyPressed() {
     }
     mu = frictioncoef[fIndex];
     println(frictioncoef[fIndex]);
+    color from = color(0, 0, 255); //blue
+    color to = color(255, 0, 0); //red
+    //color of area will be redder when friction is stronger, bluer when weaker
+    FRIC = lerpColor(from, to, frictioncoef[fIndex]);
   }
   if (key == ' ') {
     simMode[MOVING] = !simMode[MOVING];
